@@ -1,0 +1,10 @@
+Here’s what you need to do in this code challenge:
+
+1. Run the mariadb-init.sql script
+2. Go to the pom.xml and ensure that the hibernate-core dependency and mariadb-java-client dependency are specified in it.
+3. **Go to the persistence.xml file and:**
+    - Change the persistence unit name to : **artclass_persistence_unit**
+    - Change the database name from **library** to **artclass** in the jdbc url property 
+4. Go to `Main.java` class and in the `main()` method, create an `EntityManagerFactory` with the persistence unit name - **artclass_persistence_unit**
+5. Using the entity manager factory, create an entity manager 
+6. Run the application - there should be no errors
