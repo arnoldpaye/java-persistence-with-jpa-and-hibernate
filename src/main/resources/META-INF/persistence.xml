@@ -9,6 +9,7 @@
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/library" />
             <property name="jakarta.persistence.jdbc.user" value="root" />
             <property name="jakarta.persistence.jdbc.password" value="mariaDB" />
+            <property name="hibernate.show_sql" value="true" />
         </properties>
     </persistence-unit>
 </persistence>
