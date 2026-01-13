@@ -1,0 +1,11 @@
+Here’s what you need to do in this code challenge:
+
+1. Define 4 entity classes ArtClass, Teacher, Student & Review - place your entity classes inside a package named entities under the app folder.
+(Don’t worry about entity relationships at this stage. You’ll work on them in an upcoming code challenge)
+
+2. Annotate them with the @Entity annotation.
+3. You’ll also need to annotate the classes with the @Table annotation.
+4. Map the entity fields to table columns.
+5. Define the primary key of each entity class. The primary key should be a generated value.
+6. In the main class, write code to perform the Create operation on the Student entity to insert a student named “John”.
+7. When you run the application you should get an insert statement in the console and a record should be inserted in the student table.
