@@ -12,7 +12,8 @@ public class Main {
 
         // createInstance(emf);
         // findAndUpdateInstance(emf);
-        detachAndReattachInstance(emf);
+        // detachAndReattachInstance(emf);
+        removeInstance(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -59,6 +60,20 @@ public class Main {
             em.merge(book1); // force into the context
             em.detach(book1);
             book1.setName("my another newest book");
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void removeInstance(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            Book book1 = em.find(Book.class, 1);
+            em.remove(book1); // remove from the context
 
             em.getTransaction().commit();
         } finally {
