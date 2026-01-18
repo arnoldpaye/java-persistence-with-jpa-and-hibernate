@@ -1,6 +1,9 @@
 package com.arnex.app;
 
 import com.arnex.app.entities.Book;
+import com.arnex.app.entities.BookType;
+import com.arnex.app.entities.Item;
+import com.arnex.app.entities.keys.ItemKey;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -15,7 +18,8 @@ public class Main {
         // detachAndReattachInstance(emf);
         // removeInstance(emf);
         // useGetReference(emf);
-        useRefresh(emf);
+        // useRefresh(emf);
+        createEntityWithComposePK(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -109,6 +113,35 @@ public class Main {
             System.out.println("Before " + book2);
             em.refresh(book2);
             System.out.println("After " + book2);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void createEntityWithComposePK(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+           /*  BookType bookType = new BookType();
+            bookType.setCode("C001");
+            bookType.setSubCode("SC001");
+            bookType.setName("Fiction-Horror");
+
+            em.persist(bookType); */
+
+            ItemKey id = new ItemKey();
+            id.setCode("ABC");
+            id.setNumber(100);
+
+            Item item = new Item();
+            item.setId(id);
+            item.setName("ABC-100");
+
+            em.persist(item);
 
             em.getTransaction().commit();
         } finally {
