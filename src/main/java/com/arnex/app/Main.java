@@ -9,6 +9,14 @@ import jakarta.persistence.Persistence;
 public class Main {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("artclass_persistence_unit");
+
+        // create(emf);
+        update(emf);
+        attachAndDetach(emf);
+        remove(emf);
+    }
+
+    public static void create(EntityManagerFactory emf) {
         EntityManager em = emf.createEntityManager();
 
         try {
@@ -20,6 +28,17 @@ public class Main {
         } finally {
             em.close();
         }
+    }
+
+    public static void update(EntityManagerFactory emf) {
+
+    }
+
+    public static void attachAndDetach(EntityManagerFactory emf) {
+        
+    }
+
+    public static void remove(EntityManagerFactory emf) {
         
     }
 }

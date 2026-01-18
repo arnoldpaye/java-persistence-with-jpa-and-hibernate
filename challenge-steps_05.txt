@@ -1,0 +1,16 @@
+Here’s what you need to do in this code challenge:
+
+1. In the update() method, retrieve the Student entity instance that you persisted in the previous code challenge, using the find() method of the entity manager.
+2. Set the name of the student to Peter.
+3. Save and run the program. The name of the student should now be changed from John to Peter.
+(You should get an update statement on the student table to update the name column)
+4. In the attachAndDetach() method, create another new Student instance using the constructor.
+5. Set the name to Mary.
+6. Run the program to check if the Student named Mary is inserted into the student table.
+7. You’ll not find it in the database. Can you think why?
+8. Now call the merge() method of the entity manager to attach the newly created student instance to the persistence context.
+9. Save the changes and run the program. You should get an insert statement in the console and in the student table, there should be a new record with the name as Mary.
+10. Now call the detach() method of the entity manager to detach the same entity instance from the persistence context.
+11. After calling the detach() method, set the name to a different value.
+12. Save the changes and run the program. There shouldn’t be any update statement in the console and the name of the student should still be Mary.
+13. In the remove() method, find and remove the student whose id is 1. There should be a delete statement in the console and the student named Peter should be deleted from the table.
