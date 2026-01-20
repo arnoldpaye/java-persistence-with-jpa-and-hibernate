@@ -1,9 +1,12 @@
 package com.arnex.app;
 
+import java.util.List;
+
 import com.arnex.app.entities.Author;
 import com.arnex.app.entities.Book;
 import com.arnex.app.entities.BookType;
 import com.arnex.app.entities.Item;
+import com.arnex.app.entities.Review;
 import com.arnex.app.entities.keys.ItemKey;
 
 import jakarta.persistence.EntityManager;
@@ -21,7 +24,8 @@ public class Main {
         // useGetReference(emf);
         // useRefresh(emf);
         // createEntityWithComposePK(emf);
-        oneToOneRelationship(emf);
+        // oneToOneRelationship(emf);
+        oneToManyRelationship(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -168,6 +172,36 @@ public class Main {
 
             em.persist(book);
             em.persist(author);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void oneToManyRelationship(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Book book = new Book();
+            book.setName("book123");
+            book.setIsbn("123-456");
+
+            Author author = em.find(Author.class, 1);
+            book.setAuthor(author);
+
+            Review review1 = new Review();
+            review1.setComment("This book is good");
+            review1.setBook(book);
+            Review review2 = new Review();
+            review2.setComment("This book is lovely");
+            review2.setBook(book);
+
+            book.setReviews(List.of(review1, review2));
+
+            em.persist(book);
 
             em.getTransaction().commit();
         } finally {
