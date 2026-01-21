@@ -1,11 +1,11 @@
 package com.arnex.app.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "teacher")
+@DiscriminatorValue("teacher")
 public class Teacher extends Member {
     @Column(name = "teacher_code")
     private String teacherCode;

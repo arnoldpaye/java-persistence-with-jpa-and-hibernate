@@ -1,12 +1,19 @@
 package com.arnex.app.entities;
 
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 
-@MappedSuperclass
-public class Member {
+@Entity
+@Table(name = "member")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "member_type")
+public abstract class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

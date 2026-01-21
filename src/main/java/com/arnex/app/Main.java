@@ -31,7 +31,7 @@ public class Main {
         // oneToOneRelationship(emf);
         // oneToManyRelationship(emf);
         // manyToManyRelationship(emf);
-        mappedSuperclassStrategy(emf);
+        singleTableStrategy(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -244,6 +244,29 @@ public class Main {
     }
 
     private static void mappedSuperclassStrategy(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Student s = new Student();
+            s.setName("John");
+            s.setStudentCode("S001");
+
+            Teacher t = new Teacher();
+            t.setName("David");
+            t.setTeacherCode("T001");
+
+            em.persist(s);
+            em.persist(t);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void singleTableStrategy(EntityManagerFactory emf) {
         EntityManager em = emf.createEntityManager();
 
         try {
