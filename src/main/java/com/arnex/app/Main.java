@@ -5,8 +5,10 @@ import java.util.List;
 import com.arnex.app.entities.Author;
 import com.arnex.app.entities.Book;
 import com.arnex.app.entities.BookType;
+import com.arnex.app.entities.Fiction;
 import com.arnex.app.entities.Group;
 import com.arnex.app.entities.Item;
+import com.arnex.app.entities.NonFiction;
 import com.arnex.app.entities.Review;
 import com.arnex.app.entities.Student;
 import com.arnex.app.entities.Teacher;
@@ -31,7 +33,8 @@ public class Main {
         // oneToOneRelationship(emf);
         // oneToManyRelationship(emf);
         // manyToManyRelationship(emf);
-        singleTableStrategy(emf);
+        // singleTableStrategy(emf);
+        joinedTableStrategy(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -282,6 +285,29 @@ public class Main {
 
             em.persist(s);
             em.persist(t);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void joinedTableStrategy(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Fiction f = new Fiction();
+            f.setCode("F001");
+            f.setSetting("Forest");
+
+            NonFiction nf = new NonFiction();
+            nf.setCode("NF001");
+            nf.setTopic("Science");
+
+            em.persist(f);
+            em.persist(nf);
 
             em.getTransaction().commit();
         } finally {
