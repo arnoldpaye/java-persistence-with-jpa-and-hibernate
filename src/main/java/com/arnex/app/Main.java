@@ -8,6 +8,8 @@ import com.arnex.app.entities.BookType;
 import com.arnex.app.entities.Group;
 import com.arnex.app.entities.Item;
 import com.arnex.app.entities.Review;
+import com.arnex.app.entities.Student;
+import com.arnex.app.entities.Teacher;
 import com.arnex.app.entities.User;
 import com.arnex.app.entities.keys.ItemKey;
 
@@ -28,7 +30,8 @@ public class Main {
         // createEntityWithComposePK(emf);
         // oneToOneRelationship(emf);
         // oneToManyRelationship(emf);
-        manyToManyRelationship(emf);
+        // manyToManyRelationship(emf);
+        mappedSuperclassStrategy(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -233,6 +236,29 @@ public class Main {
 
             em.persist(group1);
             em.persist(group2);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void mappedSuperclassStrategy(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Student s = new Student();
+            s.setName("John");
+            s.setStudentCode("S001");
+
+            Teacher t = new Teacher();
+            t.setName("David");
+            t.setTeacherCode("T001");
+
+            em.persist(s);
+            em.persist(t);
 
             em.getTransaction().commit();
         } finally {
