@@ -5,6 +5,8 @@ import java.util.List;
 import com.arnex.app.entities.Author;
 import com.arnex.app.entities.Book;
 import com.arnex.app.entities.BookType;
+import com.arnex.app.entities.CardPayment;
+import com.arnex.app.entities.CashPayment;
 import com.arnex.app.entities.Fiction;
 import com.arnex.app.entities.Group;
 import com.arnex.app.entities.Item;
@@ -34,7 +36,8 @@ public class Main {
         // oneToManyRelationship(emf);
         // manyToManyRelationship(emf);
         // singleTableStrategy(emf);
-        joinedTableStrategy(emf);
+        // joinedTableStrategy(emf);
+        tablePerClassStrategy(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -308,6 +311,31 @@ public class Main {
 
             em.persist(f);
             em.persist(nf);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void tablePerClassStrategy(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            CardPayment card = new CardPayment();
+            card.setId(100);
+            card.setAmount(1000);
+            card.setCardNumber("1234 5678 5677 3456");
+
+            CashPayment cash = new CashPayment();
+            cash.setId(101);
+            cash.setAmount(2000);
+            cash.setCode("CA001");
+
+            em.persist(card);
+            em.persist(cash);
 
             em.getTransaction().commit();
         } finally {
