@@ -1,13 +1,16 @@
 package com.arnex.app;
 
 import java.util.List;
+import java.util.Set;
 
 import com.arnex.app.entities.Author;
 import com.arnex.app.entities.Book;
 import com.arnex.app.entities.BookType;
 import com.arnex.app.entities.CardPayment;
 import com.arnex.app.entities.CashPayment;
+import com.arnex.app.entities.Category;
 import com.arnex.app.entities.Fiction;
+import com.arnex.app.entities.Field;
 import com.arnex.app.entities.Group;
 import com.arnex.app.entities.Item;
 import com.arnex.app.entities.NonFiction;
@@ -37,7 +40,8 @@ public class Main {
         // manyToManyRelationship(emf);
         // singleTableStrategy(emf);
         // joinedTableStrategy(emf);
-        tablePerClassStrategy(emf);
+        // tablePerClassStrategy(emf);
+        compositionWithAssociation(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -336,6 +340,38 @@ public class Main {
 
             em.persist(card);
             em.persist(cash);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void compositionWithAssociation(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Field f1 = new Field();
+            f1.setName("Music");
+            Field f2 = new Field();
+            f2.setName("Art");
+
+            Category c1 = new Category();
+            c1.setName("History");
+            Category c2 = new Category();
+            c2.setName("New Advancements");
+
+            f1.setCategories(Set.of(c1, c2));
+            f2.setCategories(Set.of(c1, c2));
+
+            c1.setFields(Set.of(f1, f2));
+            c2.setFields(Set.of(f1, f2));
+
+            em.persist(f1);
+            em.persist(f2);
+
 
             em.getTransaction().commit();
         } finally {
