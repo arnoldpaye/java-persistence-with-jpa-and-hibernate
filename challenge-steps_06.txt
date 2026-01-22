@@ -1,0 +1,14 @@
+Here’s what you need to do in this code challenge:
+
+1. Implement a unidirectional one-to-one relationship between art class and the teacher.
+(You should consider the ArtClass entity as the owner of the relationship)
+Hint: You'll need to use the @OneToOne & @JoinColumn annotations.
+2. Implement the oneToOneRelationship() method of the Main class, to verify if the one-to-one relationship is established correctly.
+3. Implement a one-to-many & many to one relationship between teacher and review.
+(You should consider the Review entity as the owner of the relationship)
+Hint: You'll need to use the @ManyToOne, @OneToMany and @JoinColumn annotations.
+4. Implement the oneToManyRelationship() method of the Main class, to verify if the relationships are established correctly.
+5. Implement a unidirectional many-to-many relationship between class and student.
+(You should consider the ArtClass entity as the owner of the relationship)
+Hint: You'll need to use the @ManyToMany, @JoinTable & @JoinColumn annotations.
+6. Implement the manyToManyRelationship() method of the Main class, to verify if the many-to-many relationship is established correctly.
