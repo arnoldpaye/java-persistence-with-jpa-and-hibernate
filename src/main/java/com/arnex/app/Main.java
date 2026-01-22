@@ -3,6 +3,7 @@ package com.arnex.app;
 import java.util.List;
 import java.util.Set;
 
+import com.arnex.app.entities.Address;
 import com.arnex.app.entities.Author;
 import com.arnex.app.entities.Book;
 import com.arnex.app.entities.BookType;
@@ -41,7 +42,8 @@ public class Main {
         // singleTableStrategy(emf);
         // joinedTableStrategy(emf);
         // tablePerClassStrategy(emf);
-        compositionWithAssociation(emf);
+        // compositionWithAssociation(emf);
+        compositionWithEmbeddable(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -372,6 +374,30 @@ public class Main {
             em.persist(f1);
             em.persist(f2);
 
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void compositionWithEmbeddable(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Author author = new Author();
+            author.setName("Williams");
+
+            Address address = new Address();
+            address.setStreet("1st street");
+            address.setCity("London");
+            address.setPostalCode("12345");
+
+            author.setAddress(address);
+
+            em.persist(author);
 
             em.getTransaction().commit();
         } finally {
