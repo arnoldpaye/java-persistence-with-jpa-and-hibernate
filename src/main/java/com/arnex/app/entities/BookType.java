@@ -6,7 +6,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
+
+@NamedQueries(
+    {
+        @NamedQuery(name = "bookType.findAll", query = "SELECT bt FROM BookType bt"),
+        @NamedQuery(name = "bookType.findBySubcodeAndName", query = "SELECT bt FROM BookType bt WHERE bt.subCode = :subCode AND bt.name LIKE :name")
+    }
+)
 
 @Entity
 @IdClass(BookTypeKey.class)
