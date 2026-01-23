@@ -3,6 +3,7 @@ package com.arnex.app;
 import java.util.List;
 import java.util.Set;
 
+import com.arnex.app.dto.BooksAndAuthors;
 import com.arnex.app.entities.Address;
 import com.arnex.app.entities.Author;
 import com.arnex.app.entities.Book;
@@ -45,7 +46,8 @@ public class Main {
         // tablePerClassStrategy(emf);
         // compositionWithAssociation(emf);
         // compositionWithEmbeddable(emf);
-        writeJPQLQuery(emf);
+        // writeJPQLQuery(emf);
+        joinsWithJPQL(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -421,6 +423,32 @@ public class Main {
 
             for(BookType bt: bookTypes) {
                 System.out.println(bt);
+            }
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void joinsWithJPQL(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            /* String s = """
+                    SELECT NEW com.arnex.app.dto.BooksAndAuthors(book, author, address) FROM Book book INNER JOIN book.author author
+                    """; */
+            String s = """
+                    SELECT NEW com.arnex.app.dto.BooksAndAuthors(book, author, address) FROM Book book LEFT JOIN book.author author
+                    """;
+
+            TypedQuery<BooksAndAuthors> query = em.createQuery(s, BooksAndAuthors.class);
+            List<BooksAndAuthors> result = query.getResultList();
+
+            for(BooksAndAuthors r: result) {
+                System.out.println(r.book() + " " + r.author() + " " + r.adress());
             }
 
             em.getTransaction().commit();
