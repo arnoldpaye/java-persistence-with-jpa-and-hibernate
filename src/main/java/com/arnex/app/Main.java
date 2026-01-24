@@ -54,7 +54,8 @@ public class Main {
         // aggregateFunctions(emf);
         // orderBy(emf);
         // groupBy(emf);
-        having(emf);
+        // having(emf);
+        nativeQueries(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -611,6 +612,22 @@ public class Main {
 
             TypedQuery<Object[]> query = em.createQuery(s, Object[].class);
             query.getResultList().forEach(o -> System.out.println("Average rating by author " + o[0] + " " + o[1]));
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void nativeQueries(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            String s = "SELECT* FROM book";
+            Query q = em.createNativeQuery(s, Book.class);
+            q.getResultList().forEach(r -> System.out.println(r));
 
             em.getTransaction().commit();
         } finally {
