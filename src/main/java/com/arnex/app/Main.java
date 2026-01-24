@@ -51,7 +51,10 @@ public class Main {
         // writeJPQLQuery(emf);
         // joinsWithJPQL(emf);
         // namedQueries(emf);
-        aggregateFunctions(emf);
+        // aggregateFunctions(emf);
+        // orderBy(emf);
+        // groupBy(emf);
+        having(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -530,6 +533,84 @@ public class Main {
             queryAvg.setParameter("name", "Book1");
             Double averageRating = queryAvg.getSingleResult();
             System.out.println("Average rating for book " + averageRating);
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void orderBy(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            /* String s = """
+                    SELECT NEW com.arnex.app.dto.BooksAndAuthors(book, author, address) FROM
+                    Book book LEFT JOIN book.author author
+                    ORDER BY author.name
+                    """; */
+            String s = """
+                    SELECT NEW com.arnex.app.dto.BooksAndAuthors(book, author, address) FROM
+                    Book book LEFT JOIN book.author author
+                    ORDER BY author.name DESC
+                    """;
+            TypedQuery<BooksAndAuthors> query = em.createQuery(s, BooksAndAuthors.class);
+            List<BooksAndAuthors> result = query.getResultList();
+
+            for (BooksAndAuthors r: result) {
+                System.out.println(r.author() + " " + r.book());
+            }
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void groupBy(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            /* String s = """
+                    SELECT r.book.name, AVG(r.rating) FROM Review r
+                    GROUP BY r.book.name
+                    """; */
+
+            String s = """
+                    SELECT r.book.author.name, AVG(r.rating) FROM Review r
+                    GROUP BY r.book.author.name
+                    """;
+            
+            TypedQuery<Object[]> query = em.createQuery(s, Object[].class);
+
+            // query.getResultList().forEach(o -> System.out.println("Average rating by book " + o[0] + " " + o[1]));
+
+            query.getResultList().forEach(o -> System.out.println("Average rating by author " + o[0] + " " + o[1]));
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void having(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            String s = """
+                    SELECT r.book.author.name, AVG(r.rating) FROM Review r
+                    GROUP BY r.book.author.name
+                    HAVING AVG(r.rating) > 3
+                    """;
+
+            TypedQuery<Object[]> query = em.createQuery(s, Object[].class);
+            query.getResultList().forEach(o -> System.out.println("Average rating by author " + o[0] + " " + o[1]));
 
             em.getTransaction().commit();
         } finally {
