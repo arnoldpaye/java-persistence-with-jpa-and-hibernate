@@ -28,6 +28,9 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 public class Main {
     public static void main(String[] args) {
@@ -55,7 +58,8 @@ public class Main {
         // orderBy(emf);
         // groupBy(emf);
         // having(emf);
-        nativeQueries(emf);
+        // nativeQueries(emf);
+        criteriaQueries(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -630,6 +634,57 @@ public class Main {
             q.getResultList().forEach(r -> System.out.println(r));
 
             em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void criteriaQueries(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            
+            /*CriteriaQuery<BookType> cq = builder.createQuery(BookType.class);
+
+            Root<BookType> bookTypeRoot = cq.from(BookType.class);
+
+            cq.select(bookTypeRoot);
+
+            TypedQuery<BookType> query = em.createQuery(cq);
+            query.getResultList().forEach(r -> System.out.println(r)); */
+
+            /* CriteriaQuery<String> cq = builder.createQuery(String.class);
+
+            Root<BookType> bookTypeRoot = cq.from(BookType.class);
+
+            cq.select(bookTypeRoot.get("name"));
+
+            TypedQuery<String> query = em.createQuery(cq);
+            query.getResultList().forEach(r -> System.out.println(r)); */
+
+            /* CriteriaQuery<Object[]> cq = builder.createQuery(Object[].class);
+
+            Root<BookType> bookTypeRoot = cq.from(BookType.class);
+
+            cq.multiselect(bookTypeRoot.get("name"), bookTypeRoot.get("code"));
+
+            TypedQuery<Object[]> query = em.createQuery(cq);
+            query.getResultList().forEach(r -> System.out.println(r[0] + " " + r[1])); */
+
+            CriteriaQuery<Object[]> cq = builder.createQuery(Object[].class);
+
+            Root<Book> bookRoot = cq.from(Book.class);
+
+            cq.multiselect(bookRoot.get("id"), bookRoot.get("name"), bookRoot.get("price"));
+            cq.where(builder.gt(bookRoot.get("price"), 1000));
+            cq.orderBy(builder.desc(bookRoot.get("price")));
+
+            TypedQuery<Object[]> query = em.createQuery(cq);
+            query.getResultList().forEach(r -> System.out.println(r[0] + " " + r[1] + " " + r[2]));
+
         } finally {
             em.close();
         }
