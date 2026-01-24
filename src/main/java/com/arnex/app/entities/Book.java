@@ -1,5 +1,6 @@
 package com.arnex.app.entities;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -34,6 +35,8 @@ public class Book {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+    private BigDecimal price;
 
     public int getId() {
         return id;
@@ -75,8 +78,17 @@ public class Book {
         this.reviews = reviews;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
-        return "Book [id=" + id + ", name=" + name + ", isbn=" + isbn + "]";
+        return "Book [id=" + id + ", name=" + name + ", isbn=" + isbn + ", author=" + author + ", reviews=" + reviews
+                + ", price=" + price + "]";
     }
 }

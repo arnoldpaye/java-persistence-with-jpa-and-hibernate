@@ -1,5 +1,6 @@
 package com.arnex.app;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ import com.arnex.app.entities.keys.ItemKey;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 public class Main {
@@ -48,7 +50,8 @@ public class Main {
         // compositionWithEmbeddable(emf);
         // writeJPQLQuery(emf);
         // joinsWithJPQL(emf);
-        namedQueries(emf);
+        // namedQueries(emf);
+        aggregateFunctions(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -480,6 +483,53 @@ public class Main {
             for(BookType bt: bookTypes2) {
                 System.out.println(bt);
             }
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void aggregateFunctions(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            // COUNT() function
+            String stringCount = "SELECT COUNT(b) FROM Book b WHERE b.author.name = :name";
+            Query queryCount = em.createQuery(stringCount);
+            queryCount.setParameter("name", "Allen");
+            Long numberOfBooks = (Long) queryCount.getSingleResult();
+            System.out.println("Number of book of author " + numberOfBooks);
+
+            // SUM() function
+            String stringSum = "SELECT SUM(b.price) FROM Book b WHERE b.author.name = :name";
+            TypedQuery<BigDecimal> querySum = em.createQuery(stringSum, BigDecimal.class);
+            querySum.setParameter("name", "Jane");
+            BigDecimal totalCost = querySum.getSingleResult();
+            System.out.println("Total cost of books of author " + totalCost);
+
+            // MIN() function
+            String stringMin = "SELECT MIN(r.rating) FROM Review r WHERE r.book.name = :name";
+            TypedQuery<Integer> queryMin = em.createQuery(stringMin, Integer.class);
+            queryMin.setParameter("name", "Book1");
+            int minimumRating = queryMin.getSingleResult();
+            System.out.println("Minimum rating for book " + minimumRating);
+
+            // MAX() function
+            String stringMax = "SELECT MAX(r.rating) FROM Review r WHERE r.book.name = :name";
+            TypedQuery<Integer> queryMax = em.createQuery(stringMax, Integer.class);
+            queryMax.setParameter("name", "Book1");
+            int maximumRating = queryMax.getSingleResult();
+            System.out.println("Maximum rating for book " + maximumRating);
+
+            // AVG() function
+            String stringAvg = "SELECT AVG(r.rating) FROM Review r WHERE r.book.name = :name";
+            TypedQuery<Double> queryAvg = em.createQuery(stringAvg, Double.class);
+            queryAvg.setParameter("name", "Book1");
+            Double averageRating = queryAvg.getSingleResult();
+            System.out.println("Average rating for book " + averageRating);
 
             em.getTransaction().commit();
         } finally {

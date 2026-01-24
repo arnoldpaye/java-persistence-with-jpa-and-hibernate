@@ -23,6 +23,8 @@ public class Review {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    private int rating;
+
     public int getId() {
         return id;
     }
@@ -45,5 +47,13 @@ public class Review {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }
