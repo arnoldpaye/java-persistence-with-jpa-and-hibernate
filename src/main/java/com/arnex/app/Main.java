@@ -10,6 +10,7 @@ import com.arnex.app.entities.Teacher;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 
 public class Main {
     public static void main(String[] args) {
@@ -21,7 +22,8 @@ public class Main {
         // remove(emf);
         // oneToOneRelationship(emf);
         // oneToManyRelationship(emf);
-        manyToManyRelationship(emf);
+        // manyToManyRelationship(emf);
+        writeQueries(emf);
     }
 
     public static void create(EntityManagerFactory emf) {
@@ -173,6 +175,60 @@ public class Main {
             em.persist(c1);
             em.persist(c2);
             
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void writeQueries(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            // 1. A list of all the students
+            TypedQuery<Student> allStudentsQuery = em.createQuery("SELECT s FROM Student s", Student.class);
+            List<Student> allStudents = allStudentsQuery.getResultList();
+            for (Student student: allStudents) {
+                System.out.println(student);
+            }
+
+            // 2. A list of students who are attending classes on Monday
+            TypedQuery<Student> mondayStudentsQuery = em.createQuery("SELECT ac.students FROM ArtClass ac WHERE ac.dayOfWeek = :dayOfWeek", Student.class);
+            mondayStudentsQuery.setParameter("dayOfWeek", "Monday");
+            List<Student> mondayStudents = mondayStudentsQuery.getResultList();
+            for (Student student: mondayStudents) {
+                System.out.println(student);
+            }
+
+            // 3. Average rating for the teacher named “White”
+            TypedQuery<Double> averageTeacherRatingQuery = em.createQuery("SELECT AVG(r.rating) FROM Review r WHERE r.teacher.name = :name", Double.class);
+            averageTeacherRatingQuery.setParameter("name", "White");
+            Double average = averageTeacherRatingQuery.getSingleResult();
+            System.out.println("Average " + average);
+
+            // 4. Average ratings for teachers
+            TypedQuery<Object[]> averageRatingsForTeachersQuery = em.createQuery(
+                "SELECT t.name, AVG(r.rating) FROM Review r INNER JOIN r.teacher t GROUP BY t.name",
+                Object[].class
+            );
+            averageRatingsForTeachersQuery.getResultList().forEach(r -> System.out.println(r[0] + " " + r[1]));
+
+            // 5. Average ratings for teachers arranged in the descending order of average rating
+            TypedQuery<Object[]> averageRatingsForTeachersDescQuery = em.createQuery(
+                "SELECT t.name, AVG(r.rating) FROM Review r INNER JOIN r.teacher t GROUP BY r.teacher.id ORDER BY AVG(r.rating) DESC",
+                Object[].class
+            );
+            averageRatingsForTeachersDescQuery.getResultList().forEach(r -> System.out.println(r[0] + " " + r[1]));
+
+            // 6. Average ratings for teachers having an average rating greater than 3, arranged in the descending order of average rating
+            TypedQuery<Object[]> averageRatingsForTeachersGreaterThan3DescQuery = em.createQuery(
+                "SELECT t.name, AVG(r.rating) FROM Review r INNER JOIN r.teacher t GROUP BY r.teacher.id HAVING AVG(r.rating) > 3 ORDER BY AVG(r.rating) DESC",
+                Object[].class
+            );
+            averageRatingsForTeachersGreaterThan3DescQuery.getResultList().forEach(r -> System.out.println(r[0] + " " + r[1]));
+
             em.getTransaction().commit();
         } finally {
             em.close();

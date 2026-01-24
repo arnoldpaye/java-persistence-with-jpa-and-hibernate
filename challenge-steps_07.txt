@@ -1,0 +1,9 @@
+Here’s what you need to do in this code challenge:
+
+You should write 6 JPQL queries to retrieve this data.
+1. A list of all the students
+2. A list of students who are attending classes on Monday
+3. Average rating for the teacher named “White”
+4. Average ratings for teachers (Hint: use the GROUP BY clause)
+5. Average ratings for teachers arranged in the descending order of average rating (Hint: use the ORDER BY clause)
+6. Average ratings for teachers having an average rating greater than 3, arranged in the descending order of average rating (Hint: use the HAVING clause)
