@@ -6,6 +6,10 @@ import com.arnex.app.entities.ArtClass;
 import com.arnex.app.entities.Review;
 import com.arnex.app.entities.Student;
 import com.arnex.app.entities.Teacher;
+import com.arnex.app.repository.ReviewRepositoryImpl;
+import com.arnex.app.repository.StudentRepository;
+import com.arnex.app.repository.StudentRepositoryImpl;
+import com.arnex.app.repository.TeacherRepositoryImpl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -23,7 +27,8 @@ public class Main {
         // oneToOneRelationship(emf);
         // oneToManyRelationship(emf);
         // manyToManyRelationship(emf);
-        writeQueries(emf);
+        // writeQueries(emf);
+        useRepository(emf);
     }
 
     public static void create(EntityManagerFactory emf) {
@@ -230,6 +235,35 @@ public class Main {
             averageRatingsForTeachersGreaterThan3DescQuery.getResultList().forEach(r -> System.out.println(r[0] + " " + r[1]));
 
             em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void useRepository(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(em);
+            ReviewRepositoryImpl reviewRepository = new ReviewRepositoryImpl(em);
+
+            // 1. A list of all the students
+            List<Student> allStudents = studentRepository.getAllStudents();
+            for (Student student: allStudents) {
+                System.out.println(student);
+            }
+
+            // 2. A list of students who are attending classes on Monday
+            List<Student> mondayStudents = studentRepository.getStudentsForDay("Monday");
+            for (Student student: mondayStudents) {
+                System.out.println(student);
+            }
+
+            // 3. Average rating for the teacher named “White”
+            Double average = reviewRepository.getAvgRatingForTeacher("White");
+            System.out.println("Average " + average);
+
+            // 4. Average ratings for teachers
+            reviewRepository.getAvgRatingsByTeachers().forEach(r -> System.out.println(r));
         } finally {
             em.close();
         }

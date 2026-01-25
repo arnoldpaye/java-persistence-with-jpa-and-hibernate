@@ -1,0 +1,12 @@
+Here’s what you need to do in this code challenge:
+
+1. In the app package, create a new package named repositorypattern.
+2. Create 4 repository interfaces each having these methods: 
+    ArtClassRepository - add(), update(), remove(), getClassById()
+    ReviewRepository - add(), update(), remove(), getAvgRatingForTeacher(),
+    getAvgRatingsByTeachers()
+    StudentRepository - add(), update(), remove(), getStudentById(),
+    getAllStudents(), getStudentsForDay()
+    TeacherRepository - add(), update(), remove(), getTeacherById()
+3. Then create implementation classes for the 4 repository interfaces that you created.
+4. Now you can put the queries that you wrote in Chapter 07 code challenge, in the relevant query methods of the repository implementation classes that you created.
