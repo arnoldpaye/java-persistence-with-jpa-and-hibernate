@@ -33,9 +33,6 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<Review> reviews;
-
     private BigDecimal price;
 
     public int getId() {
@@ -70,14 +67,6 @@ public class Book {
         this.author = author;
     }
 
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
@@ -88,7 +77,6 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book [id=" + id + ", name=" + name + ", isbn=" + isbn + ", author=" + author + ", reviews=" + reviews
-                + ", price=" + price + "]";
+        return "Book [id=" + id + ", name=" + name + ", isbn=" + isbn + ", author=" + author + ", price=" + price + "]";
     }
 }

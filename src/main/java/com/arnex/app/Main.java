@@ -22,6 +22,8 @@ import com.arnex.app.entities.Student;
 import com.arnex.app.entities.Teacher;
 import com.arnex.app.entities.User;
 import com.arnex.app.entities.keys.ItemKey;
+import com.arnex.app.repository.BookRepository;
+import com.arnex.app.repository.BookRepositoryImpl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -59,7 +61,8 @@ public class Main {
         // groupBy(emf);
         // having(emf);
         // nativeQueries(emf);
-        criteriaQueries(emf);
+        // criteriaQueries(emf);
+        useRepository(emf);
     }
 
     private static void createInstance(EntityManagerFactory emf) {
@@ -233,7 +236,7 @@ public class Main {
             review2.setComment("This book is lovely");
             review2.setBook(book);
 
-            book.setReviews(List.of(review1, review2));
+            // book.setReviews(List.of(review1, review2));
 
             em.persist(book);
 
@@ -685,6 +688,43 @@ public class Main {
             TypedQuery<Object[]> query = em.createQuery(cq);
             query.getResultList().forEach(r -> System.out.println(r[0] + " " + r[1] + " " + r[2]));
 
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void useRepository(EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            BookRepository repository = new BookRepositoryImpl(em);
+
+            // add
+            Book b = new Book();
+            b.setName("New book from repository");
+            b.setIsbn("1234-1234");
+            b.setPrice(new BigDecimal(2500));
+            Author a = em.find(Author.class, 1);
+            b.setAuthor(a);
+
+            repository.add(b);
+
+            // remove
+            repository.remove(b);
+
+            // query
+            Book result = repository.getBookById(1);
+            System.out.println(result);
+
+            result = repository.getBookByName("Book1");
+            System.out.println(result);
+
+            List<Book> results = repository.getBooksByAuthor("Jane");
+            results.forEach(o -> System.out.println(o));
+
+            // update
+            result.setPrice(new BigDecimal(100));
+            repository.update(result);
         } finally {
             em.close();
         }
